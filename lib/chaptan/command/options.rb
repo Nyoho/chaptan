@@ -5,7 +5,7 @@ require "optparse"
 module Chaptan
   class Command
     # Command line options
-    module Opitons
+    module Options
       def self.parse!(_argv)
         {}
       end

@@ -10,7 +10,7 @@ module Chaptan
         options = {}
         opt = OptionParser.new
 
-        opt.on_head("-v", "--version", "Show version") do |v|
+        opt.on_head("-v", "--version", "Show version") do |_v|
           opt.version = Chaptan::VERSION
           puts opt.ver
           exit

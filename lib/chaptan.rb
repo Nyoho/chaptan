@@ -2,3 +2,4 @@
 
 require_relative "chaptan/version"
 require_relative "chaptan/command"
+require "chaptan/command/options"

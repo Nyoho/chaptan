@@ -14,7 +14,9 @@ module Chaptan
     end
 
     def execute
-      puts "Hello."
+      options = Options.parse!(@argv)
+
+      p options
     end
   end
 end

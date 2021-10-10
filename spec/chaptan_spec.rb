@@ -5,7 +5,7 @@ RSpec.describe Chaptan do
     expect(Chaptan::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it "has a command" do
+    expect(Chaptan::Command.new(ARGV)).not_to be nil
   end
 end

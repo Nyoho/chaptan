@@ -16,7 +16,9 @@ module Chaptan
     def execute
       options = Options.parse!(@argv)
 
-      p options
+      mp3filename = options[:filename]
+      ymlfilename = options[:yaml]
+      p [mp3filename, ymlfilename]
     end
   end
 end

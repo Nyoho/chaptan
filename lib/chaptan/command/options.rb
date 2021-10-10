@@ -7,15 +7,23 @@ module Chaptan
     # Command line options
     module Options
       def self.parse!(argv)
-        command_parser = OptionParser.new do |opt|
-          opt.on_head('-v', '--version', "Show version") do |v|
-            opt.version = Chaptan::VERSION
-            puts opt.ver
-            exit
-          end
+        options = {}
+        opt = OptionParser.new
+
+        opt.on_head("-v", "--version", "Show version") do |v|
+          opt.version = Chaptan::VERSION
+          puts opt.ver
+          exit
         end
 
-        command_parser.parse!(argv)
+        opt.on_head("-y", "--yaml [filename]", "yaml file of data of chapters") do |v|
+          options[:yaml] = v
+        end
+        opt.parse!(argv)
+
+        options[:filename] = argv[0]
+
+        options
       end
     end
   end

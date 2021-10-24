@@ -8,6 +8,10 @@ RSpec.describe Chaptan do
   it "has a command" do
     expect(Chaptan::Command.new(ARGV)).not_to be nil
   end
+
+  it "loads yaml file" do
+    expect(Chaptan::Command.new(ARGV).load_yaml('resources/chapters.yml')).not_to be nil
+  end
 end
 
 # TODO:

@@ -23,25 +23,25 @@ module Chaptan
         read_chapter(mp3filename)
       else
         chapters = load_yaml(ymlfilename)
-        chapters.last['to'] = file_length(mp3filename)
+        chapters.last["to"] = file_length(mp3filename)
         add_chapter(mp3filename, chapters)
       end
     end
 
     def file_length(filename)
-      if !FileTest.exist?(filename)
+      unless FileTest.exist?(filename)
         puts "Error: #{filename} does not exist."
         exit
       end
       Mp3Info.open(filename).length
     end
-    
+
     def read_chapter(filename)
-      if !FileTest.exist?(filename)
+      unless FileTest.exist?(filename)
         puts "Error: #{filename} does not exist."
         exit
       end
-      
+
       Mp3Info.open(filename) do |mp3info|
         puts mp3info
         puts "CTOC: #{mp3info.tag2.CTOC}"
@@ -51,58 +51,58 @@ module Chaptan
           puts "There is no chapter information."
         else
           mp3info.tag2.CHAP.each do |chapter|
-            puts '--------------------'
-            puts chapter#.encode('utf-8', 'UTF-16')
+            puts "--------------------"
+            puts chapter # .encode('utf-8', 'UTF-16')
           end
         end
       end
     end
-    
+
     def add_chapter(filename, chapters)
       Mp3Info.open(filename) do |mp3info|
-        if !mp3info.tag2.CHAP.nil?
+        unless mp3info.tag2.CHAP.nil?
           st = mp3info.tag2.CHAP[0]
           st[34] = "."
           mp3info.tag2.CHAP[0] = st
         end
 
-        if (chapters.size > 0) then
+        if chapters.size.positive?
           chaps = []
           ctoc = "toc1\x00".dup
           ctoc << [3, chapters.size].pack("CC")
           chapters.each_with_index do |ch, i|
-            num = i+1
-            title = ch['title']
-            description = ch['description']
-            link = ch['link']
-            
+            num = i + 1
+            title = ch["title"]
+            description = ch["description"]
+            link = ch["link"]
+
             ctoc << "chp#{num}\x00"
 
-            chap = "chp#{num}\x00".force_encoding('ASCII-8BIT').dup
-            chap << [ch['start']*1000, ch['to']*1000].pack("NN").force_encoding('ASCII-8BIT')
-            chap << "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF".dup.force_encoding('ASCII-8BIT')
-            
+            chap = "chp#{num}\x00".force_encoding("ASCII-8BIT").dup
+            chap << [ch["start"] * 1000, ch["to"] * 1000].pack("NN").force_encoding("ASCII-8BIT")
+            chap << "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF".dup.force_encoding("ASCII-8BIT")
+
             title_tag = [title.encode("utf-16")].pack("a*")
             chap << "TIT2"
-            chap << [title_tag.size+1].pack("N")
+            chap << [title_tag.size + 1].pack("N")
             chap << "\x00\x00\x01"
-            chap = chap.force_encoding('ASCII-8BIT')
+            chap = chap.force_encoding("ASCII-8BIT")
             chap << title_tag
-            
-            if !description.nil? then
-      	      description_tag = [description.encode("utf-16")].pack("a*")
+
+            unless description.nil?
+              description_tag = [description.encode("utf-16")].pack("a*")
               chap << "TIT3"
-              chap << [description_tag.size+1].pack("N")
+              chap << [description_tag.size + 1].pack("N")
               chap << "\x00\x00\x01"
               chap << description_tag
             end
-            
-            if !link.nil? then
+
+            unless link.nil?
               chap << "WXXX"
-              chap << [link.length+2].pack("N")
+              chap << [link.length + 2].pack("N")
               chap << "\x00\x00\x00#{link}\00"
             end
-            
+
             chaps << chap
           end
           mp3info.tag2.CTOC = ctoc
@@ -114,10 +114,9 @@ module Chaptan
     def load_yaml(filename)
       yml = YAML.load_file(filename)
       (yml.length - 1).times.each do |i|
-        yml[i]['to'] = yml[i+1]['start']
+        yml[i]["to"] = yml[i + 1]["start"]
       end
       yml
     end
-
   end
 end

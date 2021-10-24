@@ -26,18 +26,17 @@ module Chaptan
       end
     end
 
-    def add_chapter(filename, info_dict)
-      chapters = [
-        {title: "はじめに", description: "Some description for Chapter 1", start: 0, to: 1},
-        {title: "聖闘士星矢", link: "https://www.google.com/search?rls=en&q=%E8%81%96%E9%97%98%E5%A3%AB%E6%98%9F%E7%9F%A2&ie=UTF-8&oe=UTF-8", start: 1, to: 2},
-        {title: "FGOについて", start: 2, to: 3},
-      ]
-
-      # current info
+    def read_chapter(filename)
+      if !FileTest.exist?(filename)
+        puts "Error: #{filename} does not exist."
+        exit
+      end
+      
       Mp3Info.open(filename) do |mp3info|
         puts mp3info
-        puts mp3info.tag2.CTOC
-        puts mp3info.tag2.TIT2
+        puts "CTOC: #{mp3info.tag2.CTOC}"
+        puts "TIT2: #{mp3info.tag2.TIT2}"
+        puts "TPE1: #{mp3info.tag2.TPE1}"
         if mp3info.tag2.CHAP.nil?
           puts "There is no chapter information."
         else
@@ -45,8 +44,19 @@ module Chaptan
             puts '--------------------'
             puts chapter#.encode('utf-8', 'UTF-16')
           end
-          mp3info.tag2.CTOC #String
-          mp3info.tag2.TPE1
+        end
+      end
+    end
+    
+    def add_chapter(filename, info_dict)
+      chapters = [
+        {title: "はじめに", description: "Some description for Chapter 1", start: 0, to: 1},
+        {title: "聖闘士星矢", link: "https://www.google.com/search?rls=en&q=%E8%81%96%E9%97%98%E5%A3%AB%E6%98%9F%E7%9F%A2&ie=UTF-8&oe=UTF-8", start: 1, to: 2},
+        {title: "FGOについて", start: 2, to: 3},
+      ]
+      
+      Mp3Info.open(filename) do |mp3info|
+        if !mp3info.tag2.CHAP.nil?
           st = mp3info.tag2.CHAP[0]
           st[34] = "."
           mp3info.tag2.CHAP[0] = st
@@ -95,12 +105,6 @@ module Chaptan
           mp3info.tag2.CHAP = chaps
         end
       end
-
-      # CTOC に "toc"
-      #         child_element_ids=[u"chp1", "chp2"],
-      # CHAP を chapter の個数作ってその中に
-      # chp1, start_time=0, to_time=40000 (たぶんmsec)
-      # TIT2 に "聖闘士星矢 - I'm the first chapter"
     end
   end
 end

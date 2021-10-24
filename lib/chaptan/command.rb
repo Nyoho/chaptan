@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "mp3info"
+require "yaml"
 
 module Chaptan
   # A command class for Chaptan
@@ -21,11 +22,20 @@ module Chaptan
       if ymlfilename.nil?
         read_chapter(mp3filename)
       else
-        p [mp3filename, ymlfilename]
-        add_chapter(mp3filename, {})
+        chapters = load_yaml(ymlfilename)
+        chapters.last['to'] = file_length(mp3filename)
+        add_chapter(mp3filename, chapters)
       end
     end
 
+    def file_length(filename)
+      if !FileTest.exist?(filename)
+        puts "Error: #{filename} does not exist."
+        exit
+      end
+      Mp3Info.open(filename).length
+    end
+    
     def read_chapter(filename)
       if !FileTest.exist?(filename)
         puts "Error: #{filename} does not exist."
@@ -48,13 +58,7 @@ module Chaptan
       end
     end
     
-    def add_chapter(filename, info_dict)
-      chapters = [
-        {title: "はじめに", description: "Some description for Chapter 1", start: 0, to: 1},
-        {title: "聖闘士星矢", link: "https://www.google.com/search?rls=en&q=%E8%81%96%E9%97%98%E5%A3%AB%E6%98%9F%E7%9F%A2&ie=UTF-8&oe=UTF-8", start: 1, to: 2},
-        {title: "FGOについて", start: 2, to: 3},
-      ]
-      
+    def add_chapter(filename, chapters)
       Mp3Info.open(filename) do |mp3info|
         if !mp3info.tag2.CHAP.nil?
           st = mp3info.tag2.CHAP[0]
@@ -68,14 +72,14 @@ module Chaptan
           ctoc << [3, chapters.size].pack("CC")
           chapters.each_with_index do |ch, i|
             num = i+1
-            title = ch[:title]
-            description = ch[:description]
-            link = ch[:link]
+            title = ch['title']
+            description = ch['description']
+            link = ch['link']
             
             ctoc << "chp#{num}\x00"
 
             chap = "chp#{num}\x00".force_encoding('ASCII-8BIT').dup
-            chap << [ch[:start]*1000, ch[:to]*1000].pack("NN").force_encoding('ASCII-8BIT')
+            chap << [ch['start']*1000, ch['to']*1000].pack("NN").force_encoding('ASCII-8BIT')
             chap << "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF".dup.force_encoding('ASCII-8BIT')
             
             title_tag = [title.encode("utf-16")].pack("a*")
@@ -106,5 +110,14 @@ module Chaptan
         end
       end
     end
+
+    def load_yaml(filename)
+      yml = YAML.load_file(filename)
+      (yml.length - 1).times.each do |i|
+        yml[i]['to'] = yml[i+1]['start']
+      end
+      yml
+    end
+
   end
 end

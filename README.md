@@ -1,28 +1,30 @@
 # Chaptan
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/chaptan`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Chaptan is a command line tool that adds chapters to your MP3 files as IDv3, currently by YAML.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'chaptan'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
+Install it as:
 
     $ gem install chaptan
 
 ## Usage
 
-TODO: Write usage instructions here
+Prepare a YAML file, for example, in `your-chapters-file.yml` with the following content.
+
+```yaml
+- title: Introduction
+  start: 0
+- title: 聖闘士星矢
+  start: 1
+- title: FGOについて
+  start: 2
+```
+
+The attribute `start` means the number of seconds from the beginning of the MP3 file. And then, do like this to add chapters to `your-audio-file.mp3`.
+
+    $ chaptan your-audio-file.mp3 -y your-chapters-file.yml
+
 
 ## Development
 

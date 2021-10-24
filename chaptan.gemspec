@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["北䑓如法"]
   spec.email         = ["algebraicallyClosedField@gmail.com"]
 
-  spec.summary       = "This adds chapters to MP3 files."
-  spec.description   = "This adds chapters to MP3 files."
+  spec.summary       = "A command line tool that adds chapters to MP3 files."
+  spec.description   = "A command line tool that adds chapters to MP3 files."
   spec.homepage      = "https://github.com/Nyoho/chaptan"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.7.0"

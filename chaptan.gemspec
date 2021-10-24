@@ -8,13 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ["北䑓如法"]
   spec.email         = ["algebraicallyClosedField@gmail.com"]
 
-  spec.summary       = "This adds chapters to mp3 files."
-  spec.description   = "This adds chapters to mp3 files."
+  spec.summary       = "This adds chapters to MP3 files."
+  spec.description   = "This adds chapters to MP3 files."
   spec.homepage      = "https://github.com/Nyoho/chaptan"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
-
-  spec.metadata["allowed_push_host"] = "Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage

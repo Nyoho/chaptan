@@ -17,6 +17,11 @@ module Chaptan
     def execute
       options = Options.parse!(@argv)
 
+      if (options[:filename].nil?)
+        puts "Usage: chaptan [-y yamlfile] mp3file"
+        exit
+      end
+
       mp3filename = options[:filename]
       ymlfilename = options[:yaml]
       if ymlfilename.nil?
